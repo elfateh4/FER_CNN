@@ -9,15 +9,22 @@
 <body>
     <div class="container">
         <h1>Emotion Detection Result</h1>
-        <h2>Uploaded Image</h2>
-        <img src="{{ url_for('uploaded_file', filename=filename) }}" alt="Processed Image">
 
-        <h2>Detected Emotions</h2>
-        <ul>
-            {% for emotion in emotions %}
-                <li>{{ emotion }}</li>
-            {% endfor %}
-        </ul>
+        {% if face_images %}
+            <h2>Detected Faces and Emotions</h2>
+            <div class="faces-container">
+                {% for face_image, emotion in face_images|zip_lists(emotions) %}
+                    <div class="face">
+                        <img src="{{ url_for('uploaded_file', filename=face_image) }}" alt="Face Image" class="face-img">
+                        <p>Emotion: {{ emotion }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <h2>No faces detected</h2>
+            <p>The emotion was predicted for the entire image: {{ emotions[0] }}</p>
+            <img src="{{ url_for('uploaded_file', filename=filename) }}" alt="Full Image" class="full-img">
+        {% endif %}
 
         <a href="{{ url_for('index') }}" class="back-button">Back to Upload</a>
     </div>

@@ -1,19 +1,21 @@
-from datetime import datetime
-
-import numpy as np
 from flask import Flask, request, render_template, redirect, url_for, send_from_directory
 from werkzeug.exceptions import RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 import os
-import base64
 import torch
 from retinaface import RetinaFace
 from torchvision import transforms
 from PIL import Image
-from torch.autograd import Variable
+from datetime import datetime
+import base64
 from ResEmoteNet import ResEmoteNet
-# Initialize the Flask app
+
 app = Flask(__name__)
+
+# Register the custom 'zip' filter
+@app.template_filter('zip_lists')
+def zip_lists(list1, list2):
+    return zip(list1, list2)
 
 # Configure upload folder and allowed file types
 UPLOAD_FOLDER = 'uploads'
@@ -103,6 +105,7 @@ def result():
         faces = RetinaFace.extract_faces(img_path=file_path, align=True)
 
         emotions = []
+        face_images = []
 
         if len(faces) > 0:
             # Process each face and predict emotions
@@ -122,6 +125,13 @@ def result():
                     emotion_name = emotion_labels.get(emotion_index, 'Unknown')
                     emotions.append(emotion_name)
 
+                # Save the cropped face as a temporary image to display
+                face_filename = f'face_{i}_{filename}'
+                face_path = os.path.join(app.config['UPLOAD_FOLDER'], face_filename)
+                face_img_pil = Image.fromarray(faces[i])  # Convert to PIL Image
+                face_img_pil.save(face_path)  # Save the face image
+                face_images.append(face_filename)  # Store the face filename for rendering
+
         else:
             # If no faces are detected, process the entire image
             full_img = Image.open(file_path)
@@ -138,9 +148,10 @@ def result():
                 emotions.append(emotion_name)
 
         # Return the result page with the processed image and emotions
-        return render_template('result.html', filename=filename, emotions=emotions)
+        return render_template('result.html', filename=filename, emotions=emotions, face_images=face_images)
 
     return "No image found", 400
+
 
 @app.errorhandler(RequestEntityTooLarge)
 def handle_large_file(error):

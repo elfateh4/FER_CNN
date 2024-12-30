@@ -23,7 +23,6 @@ body {
 }
 
 h1 {
-    text-align: center;
     font-size: 2rem;
     margin-bottom: 20px;
 }
@@ -33,25 +32,31 @@ h2 {
     margin-top: 20px;
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
+.faces-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
 }
 
-ul li {
-    font-size: 1.1rem;
-    margin-bottom: 10px;
+.face {
+    text-align: center;
 }
 
-img {
-    max-width: 100%;
-    height: auto;
+.face-img {
     border: 2px solid #00CDDE;
     border-radius: 10px;
+    width: 150px;
+    height: auto;
+}
+
+.full-img {
+    max-width: 100%;
+    height: auto;
     margin-top: 20px;
 }
 
-a.back-button {
+.back-button {
     margin-top: 20px;
     padding: 10px 20px;
     background-color: #01C3A1;
@@ -62,40 +67,6 @@ a.back-button {
     transition: opacity 0.3s ease;
 }
 
-a.back-button:hover {
+.back-button:hover {
     opacity: 0.9;
-}
-
-@media (max-width: 768px) {
-    .container {
-        padding: 15px;
-    }
-
-    h1 {
-        font-size: 1.5rem;
-    }
-
-    h2 {
-        font-size: 1.2rem;
-    }
-
-    a.back-button {
-        font-size: 0.9rem;
-        padding: 8px 16px;
-    }
-}
-
-@media (max-width: 480px) {
-    h1 {
-        font-size: 1.2rem;
-    }
-
-    h2 {
-        font-size: 1rem;
-    }
-
-    a.back-button {
-        font-size: 0.8rem;
-        padding: 6px 12px;
-    }
 }
